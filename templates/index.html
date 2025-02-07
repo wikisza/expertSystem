@@ -1,58 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
     <title>Rekomendacje</title>
 </head>
 
 <body>
-    <h1>Wybierz swoje preferencje</h1>
-    <form action="/recommend" method="post">
-        <label for="preferowanyTyp">Typ:</label>
-        <select name="preferowanyTyp" id="preferowanyTyp">
-            <option value="Film">Film</option>
-            <option value="Serial">Serial</option>
-        </select>
-        <br>
-        <label for="gatunek">Gatunek:</label>
-        <select name="gatunek" id="gatunek">
-            <option value="Akcja">Akcja</option>
-            <option value="SciFi">Sci-Fi</option>
-            <option value="Fantasy">Fantasy</option>
-            <option value="Horror">Horror</option>
-            <option value="Komedia">Komedia</option>
-            <option value="Dramat">Dramat</option>
-            <option value="Thiller">Thiller</option>
-            <option value="Animacja">Animacja</option>
-            <option value="Romans">Romans</option>
-            <option value="Kryminal">Kryminal</option>
-        </select>
-        <br>
-        <label for="premiera">Premiera:</label>
-        <select name="premiera" id="premiera"></select>
-        <br>
-
-        <!-- Pole Opis ukryte na starcie -->
-        <div id="opisContainer" style="display: none;">
-            <label for="opis">Opis:</label>
-            <select name="opis" id="opis"></select>
+    <div class="mainWindow">
+        
+        <div class="bar">
+            <h1>Wybierz swoje preferencje</h1>
         </div>
 
-        <br><br>
-        <button type="submit">Zobacz rekomendacje</button>
-    </form>
+        <form action="/recommend" method="post">
+            <label for="preferowanyTyp">Typ:</label>
+            <select name="preferowanyTyp" id="preferowanyTyp">
+                <option value="Film">Film</option>
+                <option value="Serial">Serial</option>
+            </select>
+            <br>
+            <label for="gatunek">Gatunek:</label>
+            <select name="gatunek" id="gatunek">
+                <option value="Akcja">Akcja</option>
+                <option value="SciFi">Sci-Fi</option>
+                <option value="Fantasy">Fantasy</option>
+                <option value="Horror">Horror</option>
+                <option value="Komedia">Komedia</option>
+                <option value="Dramat">Dramat</option>
+                <option value="Thiller">Thiller</option>
+                <option value="Animacja">Animacja</option>
+                <option value="Romans">Romans</option>
+                <option value="Kryminal">Kryminal</option>
+            </select>
+            <br>
+            <label for="premiera">Premiera:</label>
+            <select name="premiera" id="premiera"></select>
+            <br>
+
+            <!-- Pole Opis ukryte na starcie -->
+            <div id="opisContainer" style="display: none;">
+                <label for="opis">Opis:</label>
+                <select name="opis" id="opis"></select>
+            </div>
+
+            <button type="submit">Zobacz rekomendacje</button>
+        </form>
+    </div>
 
     <script>
-        let movies = [
-            {
-                'id': 1,
-                'typ': 'dua',
-                'title': 'sraka',
-                'description': 'piękne'
-            }
-        ];
         document.addEventListener('DOMContentLoaded', function () {
             const typSelect = document.getElementById('preferowanyTyp');
             const gatunekSelect = document.getElementById('gatunek');
@@ -60,112 +59,146 @@
             const opisSelect = document.getElementById('opis');
             const opisContainer = document.getElementById('opisContainer');
 
-            // Funkcja do aktualizacji opcji "Premiera"
+            const desc = {
+                "24 (2001-2010)": ["Serial", "Akcja", "Przed", "2010"],
+                "The Punisher (2017–2019)": ["Serial", "Akcja", "Po", "2010", "Zemsta, brutalna przemoc, moralne dylematy antybohatera"],
+                "Arrow (2012–2020)": ["Serial", "Akcja", "Po", "2010", "Superbohater bez nadprzyrodzonych mocy, lucznictwo, tajemnicze watki"],
+
+                "Black Mirror (2011-obecnie)": ["Serial", "SciFi", "Przed", "2015"],
+                "Stranger Things (2016–obecnie)": ["Serial", "SciFi", "Po", "2015", "Lata 80, dzieci kontra nadprzyrodzone sily, nostalgia za dawnymi czasami"],
+                "The Expanse (2015–2021)": ["Serial", "SciFi", "Po", "2015", "Przestrzen kosmiczna, polityczne intrygi, wojny miedzy planetami"],
+
+                "Game of Thrones (2011-2019)": ["Serial", "Fantasy", "Przed", "2015"],
+                "The Witcher (2019–obecnie)": ["Serial", "Fantasy", "Po", "2015", "Opowiesci o wiedzminie, potwory, magia, moralne wybory bohaterow"],
+                "His Dark Materials (2019–2022)": ["Serial", "Fantasy", "Po", "2015", "Rownolegle swiaty, mloda dziewczyna na misji, zwierzece daemony"],
+
+                "The Haunting of Hill House (2018)": ["Serial", "Horror", "Po", "2015"],
+                "American Horror Story (2011–obecnie)": ["Serial", "Horror", "Przed", "2015", "Antologia horroru, rozne sezony z roznymi historiami, mroczne tematy."],
+                "The Walking Dead (2010–2022)": ["Serial", "Horror", "Przed", "2015", "Swiat opanowany przez zombie, walka o przetrwanie, rozpad spoleczenstwa."],
+
+                "Brooklyn Nine-Nine (2013-2021)": ["Serial", "Komedia", "Po", "2010"],
+                "The Office (US) (2005–2013)": ["Serial", "Komedia", "Przed", "2010", "Humor w miejscu pracy, mockument, codzienne problemy w biurze."],
+                "Parks and Recreation (2009–2015)": ["Serial", "Komedia", "Przed", "2010", "Zycie urzednikow lokalnych, absurdalny humor, pozytywna energia."],
+
+                "Breaking Bad (2008 - 2013)": ["Serial", "Dramat", "Przed", "2010"],
+                "The Crown (2016 - obecnie)": ["Serial", "Dramat", "Po", "2010", "Historia brytyjskiej monarchii, polityka i prywatne Zycie krolowej Elzbiety II"],
+                "Succession (2018 - 2023)": ["Serial", "Dramat", "Po", "2010", "Rodzinne konflikty w wielkim imperium medialnym, walka o wladze, psychologiczne napiecia."],
+
+                "True Detective (2014 - obecnie)": ["Serial", "Thiller", "Przed", "2015"],
+                "Mindhunter (2017 - 2019)": ["Serial", "Thiller", "Po", "2015", "Profilowanie seryjnych mordercow, poczatki badan nad psychika przestepcow, oparty na prawdziwych wydarzeniach."],
+                "You (2018 - obecnie)": ["Serial", "Thiller", "Po", "2015", "Manipulacja, obsesyjna milosc, niepokojacy portret psychologiczny."],
+
+                "Avatar: The Last Airbender (2005-2008)": ["Serial", "Animacja", "Przed", "2010"],
+                "Rick and Morty (2013-obecnie)": ["Serial", "Animacja", "Po", "2010", "Podroze miedzy wymiarami, czarny humor, filozoficzne zagadnienia."],
+                "BoJack Horseman (2014 - 2020)": ["Serial", "Animacja", "Po", "2010", "Animowany Swiat zwierzat, depresja, satyra na Hollywood."],
+
+                "Outlander (2014-obecnie)": ["Serial", "Romans", "Przed", "2015"],
+                "Bridgerton (2020-obecnie)": ["Serial", "Romans", "Po", "2015", "XIX-wieczny Londyn, romans, intrygi w wyzszych sferach, wizualne bogactwo."],
+                "Normal People (2020)": ["Serial", "Romans", "Po", "2015", "Intymna historia milosci i dojrzewania, relacje mlodych ludzi, emocjonalna glebia."],
+
+                "Sherlock (2010-2017)": ["Serial", "Kryminal", "Przed", "2015"],
+                "Narcos (2015-2017)": ["Serial", "Kryminal", "Po", "2015", "Historia Pabla Escobara i karteli narkotykowych w Kolumbii, brutalna rzeczywistosc przestepcza."],
+                "Better Call Saul (2015-2022)": ["Serial", "Kryminal", "Po", "2015", "Historia prawnika w swiecie przestepczym, prequel Breaking Bad, moralne dylematy."],
+
+                //filmy 
+                "Die hard (1998)": ["Film", "Akcja", "Przed", "2010"],
+                "Mad Max: Fury Road(2015)": ["Film", "Akcja", "Po", "2010", "Postapokaliptyczny Swiat, szybkie poscigi samochodowe, minimalistyczny dialog."],
+                "John Wick (2014)": ["Film", "Akcja", "Po", "2010", "Wysoce stylizowana przemoc, mistrzowskie sekwencje walki, zemsta za smierc psa."],
+
+                "Inception (2010)": ["Film", "SciFi", "Przed", "2011"],
+                "Blade Runner 2049 (2017)": ["Film", "SciFi", "Po", "2011", "Cyberpunkowy Swiat, pytania o nature czlowieczenstwa, wciagajaca wizualnie scenografia."],
+                "Interstellar (2014)": ["Film", "SciFi", "Po", "2011", "Podroze kosmiczne, paradoksy czasowe, emocjonalna historia ojca i corki."],
+
+                "Pans Labyrinth (2006)": ["Film", "Fantasy", "Po", "2005"],
+                "The Lord of the Rings (2001)": ["Film", "Fantasy", "Przed", "2005", "Epicka podroz, magia, przyjazn i lojalnosc."],
+                "Harry Potter and the Sorcerer’s Stone (2001)": ["Film", "Fantasy", "Przed", "2005", "Swiat magii, mlodziez w szkole czarodziejow, walka dobra ze zlem."],
+
+                "The Exorcist (1973)": ["Film", "Horror", "Przed", "2010"],
+                "Hereditary (2018)": ["Film", "Horror", "Po", "2010", "Powolne budowanie napiecia, trauma rodzinna, nadnaturalne elementy."],
+                "A Quiet Place (2018)": ["Film", "Horror", "Po", "2010", "Cisza jako element przetrwania, rodzinne wiezi, groza zwiazana z nieznanym zagrozeniem."],
+
+                "The Grand Budapest Hotel (2014)": ["Film", "Komedia", "Po", "2010"],
+                "Groundhog Day (1993)": ["Film", "Komedia", "Przed", "2010", "Petla czasowa, humor egzystencjalny, rozwoj bohatera."],
+                "Superbad (2007)": ["Film", "Komedia", "Przed", "2010", "Przygody nastolatkow, humor niepoprawny, przyjazn i dojrzewanie."],
+
+                "12 Angry Man (1957)": ["Film", "Dramat", "Przed", "1960"],
+                "The Godfather (1972)": ["Film", "Dramat", "Po", "1960", "Rodzinne intrygi, mafia, klasyczne dialogi."],
+                "Shindler’s List (1993)": ["Film", "Dramat", "Po", "1960", "Holocaust, moralna przemiana bohatera, czarno-biala stylistyka."],
+
+                "Gone Girl (2014)": ["Film", "Thiller", "Po", "2000"],
+                "Se7en (1995)": ["Film", "Thiller", "Przed", "2000", "Seryjny morderca, atmosfera mroku i zagadki, analiza grzechow glownych."],
+                "The Silence of the Lambs (1991)": ["Film", "Thiller", "Przed", "2000", "Relacja miedzy sledcza a morderca, psychologia zla, niezapomniane dialogi."],
+
+                "Toy Story (1995)": ["Film", "Animacja", "Przed", "2001"],
+                "Spirited Away (2001)": ["Film", "Animacja", "Po", "2001", "Swiat duchow, symbolika, magiczna przygoda."],
+                "Shrek (2001)": ["Film", "Animacja", "Po", "2001", "Przelamywanie stereotypow bajkowych, humor dla dzieci i doroslych, oryginalne postacie"],
+
+                "La La Land (2016)": ["Film", "Romans", "Po", "2010"],
+                "Pride & Prejudice (2005)": ["Film", "Romans", "Przed", "2010", "Relacje spoleczne, milosc powolnie budowana, napiecie romantyczne."],
+                "The Notebook (2004)": ["Film", "Romans", "Przed", "2010", "Milosc na przestrzeni lat, emocjonalna narracja, klasyczne sceny romantyczne."],
+
+                "The Departed (2006)": ["Film", "Kryminal", "Po", "2000"],
+                "Pulp Fiction (1994)": ["Film", "Kryminal", "Przed", "2000", "Nielinowa narracja, stylizowane dialogi, czarny humor."],
+                "Heat (1995)": ["Film", "Kryminal", "Przed", "2000", "Zmagania policjantow i zlodziei, poscigi, moralne dylematy."]
+            };
+
             function updatePremieraOptions() {
                 const typ = typSelect.value;
                 const gatunek = gatunekSelect.value;
 
-                // Wyczyszczenie starych opcji
                 premieraSelect.innerHTML = '';
+                const addedYears = new Set();
 
-                if (typ === 'Serial' && gatunek === 'Akcja') {
-                    const option1 = document.createElement('option');
-                    option1.value = 'Przed';
-                    option1.textContent = 'Przed 2010';
-                    premieraSelect.appendChild(option1);
-
-                    const option2 = document.createElement('option');
-                    option2.value = 'Po';
-                    option2.textContent = 'Po 2010';
-                    premieraSelect.appendChild(option2);
+                for (const obj in desc) {
+                    if (desc[obj][0] === typ && desc[obj][1] === gatunek) {
+                        const year = `${desc[obj][2]} ${desc[obj][3]}`;
+                        if (!addedYears.has(year)) {
+                            const option = document.createElement('option');
+                            option.value = desc[obj][2];
+                            option.textContent = year;
+                            premieraSelect.appendChild(option);
+                            addedYears.add(year);
+                        }
+                    }
                 }
-                else if (typ === 'Serial' && (gatunek === 'SciFi' || gatunek === 'Fantasy')) {
-                    const option1 = document.createElement('option');
-                    option1.value = 'Przed';
-                    option1.textContent = 'Przed 2015';
-                    premieraSelect.appendChild(option1);
 
-                    const option2 = document.createElement('option');
-                    option2.value = 'Po';
-                    option2.textContent = 'Po 2015';
-                    premieraSelect.appendChild(option2);
-                }
-                else {
+                if (premieraSelect.options.length === 0) {
                     const option = document.createElement('option');
                     option.value = '';
                     option.textContent = 'Brak dostępnych opcji';
                     premieraSelect.appendChild(option);
                 }
 
-                // Sprawdź, czy opis ma być pokazany
                 updateOpisOptions();
             }
 
-            // Funkcja do aktualizacji opcji "Opis"
             function updateOpisOptions() {
                 const typ = typSelect.value;
                 const gatunek = gatunekSelect.value;
                 const premiera = premieraSelect.value;
 
-                // Sprawdź warunki
-                if (typ === 'Serial' && gatunek === 'Akcja' && premiera === 'Po') {
-                    // Pokaż kontener i dodaj opcje
-                    opisContainer.style.display = 'block';
-                    opisSelect.innerHTML = '';
+                opisSelect.innerHTML = '';
+                let found = false;
 
-                    const opis1 = document.createElement('option');
-                    opis1.value = 'Zemsta, brutalna przemoc, moralne dylematy antybohatera';
-                    opis1.textContent = 'Zemsta, brutalna przemoc, moralne dylematy antybohatera';
-                    opisSelect.appendChild(opis1);
-
-                    const opis2 = document.createElement('option');
-                    opis2.value = 'Superbohater bez nadprzyrodzonych mocy, lucznictwo, tajemnicze watki';
-                    opis2.textContent = 'Superbohater bez nadprzyrodzonych mocy, lucznictwo, tajemnicze watki';
-                    opisSelect.appendChild(opis2);
+                for (const obj in desc) {
+                    if (desc[obj][0] === typ && desc[obj][1] === gatunek && desc[obj][2] === premiera) {
+                        if (desc[obj][4]) {
+                            const option = document.createElement('option');
+                            option.value = desc[obj][4];
+                            option.textContent = desc[obj][4];
+                            opisSelect.appendChild(option);
+                            found = true;
+                        }
+                    }
                 }
-                else if (typ === 'Serial' && gatunek === 'SciFi' && premiera === 'Po') {
-                    // Pokaż kontener i dodaj opcje
-                    opisContainer.style.display = 'block';
-                    opisSelect.innerHTML = '';
 
-                    const opis1 = document.createElement('option');
-                    opis1.value = 'Lata 80, dzieci kontra nadprzyrodzone sily, nostalgia za dawnymi czasami';
-                    opis1.textContent = 'Lata 80, dzieci kontra nadprzyrodzone sily, nostalgia za dawnymi czasami';
-                    opisSelect.appendChild(opis1);
-
-                    const opis2 = document.createElement('option');
-                    opis2.value = 'Przestrzen kosmiczna, polityczne intrygi, wojny miedzy planetami';
-                    opis2.textContent = 'Przestrzen kosmiczna, polityczne intrygi, wojny miedzy planetami';
-                    opisSelect.appendChild(opis2);
-                }
-                else if (typ === 'Serial' && gatunek === 'Fantasy' && premiera === 'Po') {
-                    // Pokaż kontener i dodaj opcje
-                    opisContainer.style.display = 'block';
-                    opisSelect.innerHTML = '';
-
-                    const opis1 = document.createElement('option');
-                    opis1.value = 'Opowiesci o wiedzminie, potwory, magia, moralne wybory bohaterow';
-                    opis1.textContent = 'Opowiesci o wiedzminie, potwory, magia, moralne wybory bohaterow';
-                    opisSelect.appendChild(opis1);
-
-                    const opis2 = document.createElement('option');
-                    opis2.value = 'Rownolegle swiaty, mloda dziewczyna na misji, zwierzece daemony';
-                    opis2.textContent = 'Rownolegle swiaty, mloda dziewczyna na misji, zwierzece daemony';
-                    opisSelect.appendChild(opis2);
-                }
-                else {
-                    // Ukryj kontener i wyczyść opcje
-                    opisContainer.style.display = 'none';
-                    opisSelect.innerHTML = '';
-                }
+                opisContainer.style.display = found ? 'block' : 'none';
             }
 
-            // Aktualizacja przy każdej zmianie Typu, Gatunku lub Premiera
             typSelect.addEventListener('change', updatePremieraOptions);
             gatunekSelect.addEventListener('change', updatePremieraOptions);
             premieraSelect.addEventListener('change', updateOpisOptions);
 
-            // Inicjalizacja przy ładowaniu strony
             updatePremieraOptions();
         });
     </script>

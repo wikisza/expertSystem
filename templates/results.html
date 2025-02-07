@@ -3,12 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+
     <title>Wyniki</title>
 </head>
 <body>
-    
-    {{ wynik[1] }}
+    <div class="mainView">
 
-    <a href="/">Powrót</a>
+        <div class="picture">
+            <img src="{{ url_for('static', filename=wynik[3]) }}" alt="Okładka propozycji.">
+        </div>
+        
+        <div class="group">
+            <div class="title">
+                {{ wynik[1] }}
+            </div>
+            
+            <div class="description">
+                {{ wynik[2] }}
+            </div>
+        </div>
+        
+    </div>
+        <a href="/">Powrót</a>
 </body>
 </html>

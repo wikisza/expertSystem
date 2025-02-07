@@ -1,0 +1,105 @@
+/* Globalne ustawienia */
+body {
+    font-family: 'Roboto', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(120deg, #f6d365 0%, #83316a 100%);
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* Nagłówki */
+h1, h2 {
+    color: #4a4a4a;
+    margin: 10px 0;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+/* Sekcja wyników */
+div.result-container {
+    background-color: #ffffffcc;
+    padding: 20px 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 600px;
+    margin: 20px;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Obraz okładki */
+img {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    border-radius: 10px;
+    margin-top: 15px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Link powrotu */
+a {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    text-decoration: none;
+    background-color: #ff7f50;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+a:hover {
+    background-color: #e76b47;
+    text-decoration: none;
+}
+
+.mainView{
+    display: flex;
+    justify-content: center;
+
+}
+
+.picture, .group{
+    padding: 5rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.title{
+    font-size: 3rem;
+    margin-bottom: 2rem;
+}
+
+.description{
+    font-size: 1.5rem;
+    color:#411717;
+}
+
+/* Animacje */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
